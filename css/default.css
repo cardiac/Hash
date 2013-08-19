@@ -1,0 +1,11 @@
+input.length {
+    width: 400px;
+}
+
+input.input {
+    width: 800px;
+}
+
+th {
+    text-align: left;
+}
