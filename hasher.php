@@ -92,6 +92,7 @@ class Hasher
         'all' => null,
         'all_no_quotes' => null,
         'alphanumeric' => null,
+        'hex' => null,
         'numeric' => null
     );
     
@@ -263,6 +264,7 @@ class Hasher
             $this->_strings['all'] = htmlentities($this->generate_string($this->salt(' ', '~')));
             $this->_strings['all_no_quotes'] = htmlentities($this->generate_string(str_replace(array('"', "'") , '', $this->salt(' ', '~'))));
             $this->_strings['alphanumeric'] = $this->generate_string($this->salt(0, 9).$this->salt('A', 'Z').$this->salt('a', 'z'));
+            $this->_strings['hex'] = $this->generate_string($this->salt(0, 9).$this->salt('a', 'f'));
             $this->_strings['numeric'] = $this->generate_string($this->salt(0, 9));
         } elseif (!is_numeric($this->length) || $this->length <= 0)
             $this->_error = 'Please enter a valid string length.';
