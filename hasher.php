@@ -217,8 +217,10 @@ class Hasher
         
         $this->display_error();
         
-        foreach ($actions as $action)
-            include_once('content/'.$action.'.php');
+        include_once('content/form.php');
+        include_once('content/strings.php');
+        include_once('content/hash.php');
+        include_once('content/type.php');
     }
     
     /**
