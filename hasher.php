@@ -106,7 +106,13 @@ class Hasher
         8 => array(
             'adler32',
             'crc32',
-            'crc32b'
+            'crc32b',
+            'fnv131',
+            'fnv1a32'
+        ),
+        16 => array(
+            'fnv164',
+            'fnv1a64'
         ),
         32 => array(
             'hashval128,3',
@@ -205,7 +211,7 @@ class Hasher
         // Load content
         $actions = array();
         $handle = opendir('content');
-        while (false !== ($file = readdir($handle))) {
+        while (($file = readdir($handle)) !== false) {
             $action = strstr($file, '.', true);
             if (method_exists($this, $action)) {
                 $actions[] = $action;
@@ -231,7 +237,7 @@ class Hasher
      */
     private function display_error()
     {
-        if ($this->_error != null)
+        if ($this->_error)
             echo '<div id="error">'.$this->_error.'</div>';
     }
     
@@ -262,7 +268,7 @@ class Hasher
      */
     private function strings()
     {
-        if ($this->length != null && is_numeric($this->length) && $this->length > 0) {
+        if ($this->length && is_numeric($this->length) && $this->length > 0) {
             $this->_strings['all'] = htmlentities($this->generate_string($this->salt(' ', '~')));
             $this->_strings['all_no_quotes'] = htmlentities($this->generate_string(str_replace(array('"', "'") , '', $this->salt(' ', '~'))));
             $this->_strings['alphanumeric'] = $this->generate_string($this->salt(0, 9).$this->salt('A', 'Z').$this->salt('a', 'z'));
@@ -281,13 +287,13 @@ class Hasher
      */
     private function type()
     {
-        if ($this->input != null)
+        if ($this->input)
             foreach ($this->_tests as $length => $hashes)
                 foreach ($hashes as $test)
                     if ($this->validate_hash($this->input, $length)) {
                         $first = true;
                         foreach ($hashes as $test) {
-                            if ($first == false)
+                            if (!$first)
                                 $this->_type .= ', ';
                             else {
                                 $this->_type = '';
@@ -421,10 +427,7 @@ class Hasher
      */
     private function validate_hash($input = null, $length = 0)
     {
-        if (strlen($input) != $length)
-            return false;
-        
-        return ($this->validate_chars($this->salt(0, 9).$this->salt('a', 'f'), $input));
+        return strlen($input) == $length && $this->validate_chars($this->salt(0, 9).$this->salt('a', 'f'), $input);
     }
         
     /**
